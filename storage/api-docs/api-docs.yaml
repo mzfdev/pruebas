@@ -1,0 +1,435 @@
+openapi: 3.0.0
+info:
+  title: API de Estudiantes
+  version: 1.0.0
+  description: Documentación de la API para gestionar estudiantes
+paths:
+  /api/students:
+    get:
+      tags:
+        - Students
+      summary: Obtener lista de estudiantes
+      description: Retorna todos los estudiantes registrados en el sistema
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Student'
+  /api/students/{id}/grade-report:
+    get:
+      tags:
+        - Students
+      summary: Generar reporte de calificaciones de un estudiante
+      description: Retorna el reporte de calificaciones de un estudiante en formato JSON
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del estudiante
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      student:
+                        $ref: '#/components/schemas/Student'
+                      grades:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Grade'
+                      summary:
+                        $ref: '#/components/schemas/GradeSummary'
+        '404':
+          description: Estudiante no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Estudiante no encontrado"
+  /api/reports/generate-pdf:
+    post:
+      tags:
+        - Reports
+      summary: Generate a PDF report
+      description: Generates a PDF report for a specific report ID and format
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - report_id
+                - format_id
+              properties:
+                report_id:
+                  type: integer
+                  example: 1
+                  description: ID of the report
+                format_id:
+                  type: integer
+                  example: 1
+                  description: ID of the format
+      responses:
+        '200':
+          description: PDF generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "PDF generated successfully"
+                  data:
+                    type: object
+                    properties:
+                      file_path:
+                        type: string
+                        example: "reports/report_1.pdf"
+                      url:
+                        type: string
+                        example: "http://localhost:8000/storage/reports/report_1.pdf"
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation failed"
+                  errors:
+                    type: object
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed to generate PDF"
+  /api/reports/download/{fileName}:
+    get:
+      tags:
+        - Reports
+      summary: Download a generated PDF
+      description: Downloads a PDF file by its filename
+      parameters:
+        - name: fileName
+          in: path
+          required: true
+          description: Name of the PDF file
+          schema:
+            type: string
+      responses:
+        '200':
+          description: PDF file download
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "File not found"
+  /api/reports/send-by-email:
+    post:
+      tags:
+        - Reports
+      summary: Send a report by email
+      description: Simulates sending a report by email and updates the report status to 'sended'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - report_id
+              properties:
+                report_id:
+                  type: integer
+                  example: 1
+                  description: ID of the report to send
+      responses:
+        '200':
+          description: Report sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Report sent by email successfully"
+                  data:
+                    type: object
+                    properties:
+                      report_id:
+                        type: integer
+                        example: 1
+                      report_generated_id:
+                        type: integer
+                        example: 1
+                      format:
+                        type: string
+                        example: "pdf"
+                      status:
+                        type: string
+                        example: "sended"
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation failed"
+                  errors:
+                    type: object
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed to send report by email"
+  /api/reports/print:
+    post:
+      tags:
+        - Reports
+      summary: Print a report
+      description: Simulates printing a report and updates the report status to 'printed'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - report_id
+              properties:
+                report_id:
+                  type: integer
+                  example: 1
+                  description: ID of the report to print
+      responses:
+        '200':
+          description: Report printed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Report printed successfully"
+                  data:
+                    type: object
+                    properties:
+                      report_id:
+                        type: integer
+                        example: 1
+                      report_generated_id:
+                        type: integer
+                        example: 1
+                      format:
+                        type: string
+                        example: "pdf"
+                      status:
+                        type: string
+                        example: "printed"
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Validation failed"
+                  errors:
+                    type: object
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Failed to print report"
+components:
+  schemas:
+    Student:
+      type: object
+      required:
+        - id
+        - carnet
+        - name
+        - lastname
+        - email
+      properties:
+        id:
+          type: integer
+          example: 1
+        carnet:
+          type: string
+          example: "20210001"
+        name:
+          type: string
+          example: "Juan"
+        lastname:
+          type: string
+          example: "Pérez García"
+        email:
+          type: string
+          example: "juan.perez@universidad.edu"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-03T05:41:38.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-02-03T05:41:38.000000Z"
+    Subject:
+      type: object
+      required:
+        - id
+        - code
+        - name
+        - uv
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "MAT101"
+        name:
+          type: string
+          example: "Matemáticas I"
+        uv:
+          type: integer
+          example: 4
+    Grade:
+      type: object
+      required:
+        - subject
+        - qualification
+        - coursed_times
+        - status
+      properties:
+        subject:
+          $ref: '#/components/schemas/Subject'
+        qualification:
+          type: number
+          format: float
+          example: 85.5
+        coursed_times:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "Active"
+    GradeSummary:
+      type: object
+      required:
+        - total_subjects
+        - approved_subjects
+        - failed_subjects
+        - average_grade
+        - total_uv
+      properties:
+        total_subjects:
+          type: integer
+          example: 5
+        approved_subjects:
+          type: integer
+          example: 4
+        failed_subjects:
+          type: integer
+          example: 1
+        average_grade:
+          type: number
+          format: float
+          example: 78.5
+        total_uv:
+          type: integer
+          example: 20
