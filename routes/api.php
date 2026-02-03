@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,3 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Students endpoints
 Route::get('/students', [StudentController::class, 'index']);
 Route::get('/students/{id}/grade-report', [StudentController::class, 'gradeReport']);
+
+// Reports endpoints
+Route::post('/reports/generate-pdf', [ReportController::class, 'generatePdf']);
+Route::get('/reports/download/{fileName}', [ReportController::class, 'downloadPdf']);

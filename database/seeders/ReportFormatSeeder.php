@@ -15,10 +15,13 @@ class ReportFormatSeeder extends Seeder
     {
         $formats = [
             ['code' => 'pdf', 'name' => 'PDF'],
+            ['code' => 'SUMMARY', 'name' => 'Summary Report'],
+            ['code' => 'DETAILED', 'name' => 'Detailed Report'],
+            ['code' => 'STATISTICS', 'name' => 'Statistics Report'],
         ];
 
         foreach ($formats as $format) {
-            ReportFormat::create($format);
+            ReportFormat::firstOrCreate(['code' => $format['code']], $format);
         }
     }
 }
