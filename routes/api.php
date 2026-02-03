@@ -27,3 +27,5 @@ Route::get('/students/{id}/grade-report', [StudentController::class, 'gradeRepor
 // Reports endpoints
 Route::post('/reports/generate-pdf', [ReportController::class, 'generatePdf']);
 Route::get('/reports/download/{fileName}', [ReportController::class, 'downloadPdf']);
+Route::post('/reports/send-by-email', [ReportController::class, 'sendReportByEmail']);
+Route::post('/reports/print', [ReportController::class, 'printReport']);
