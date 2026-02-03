@@ -197,5 +197,21 @@ docker-compose up -d
    
    El frontend se ejecutará por defecto en el puerto `http://localhost:3000`
 
+### Dockerización del Frontend
+Para dockerizar el frontend:
+
+1. Construir la imagen de Docker:
+   ```bash
+   cd FrontEnd
+   docker build -t frontend-app .
+   ```
+
+2. Ejecutar el contenedor:
+   ```bash
+   docker run -p 80:80 frontend-app
+   ```
+   
+   El frontend dockerizado se ejecutará en el puerto `http://localhost:80`
+
 ### Nota
 Asegúrate de que el backend esté corriendo antes de iniciar el frontend, ya que este último consume la API del backend.
