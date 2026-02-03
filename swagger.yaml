@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: API de Estudiantes
+  version: 1.0.0
+  description: Documentación de la API para gestionar estudiantes
+paths:
+  /api/students:
+    get:
+      tags:
+        - Students
+      summary: Obtener lista de estudiantes
+      description: Retorna todos los estudiantes registrados en el sistema
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Student'
+components:
+  schemas:
+    Student:
+      type: object
+      required:
+        - id
+        - carnet
+        - name
+        - lastname
+        - email
+      properties:
+        id:
+          type: integer
+          example: 1
+        carnet:
+          type: string
+          example: "20210001"
+        name:
+          type: string
+          example: "Juan"
+        lastname:
+          type: string
+          example: "Pérez García"
+        email:
+          type: string
+          example: "juan.perez@universidad.edu"
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-02-03T05:41:38.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-02-03T05:41:38.000000Z"
