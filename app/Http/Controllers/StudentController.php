@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Report;
+use App\Models\ReportInscription;
+use App\Models\ReportStatus;
 use Illuminate\Http\Request;
 
 /**
@@ -90,6 +93,40 @@ class StudentController extends Controller
             ->with(['subject', 'inscriptionStatus'])
             ->get();
         
+        try {
+            $pendingStatus = ReportStatus::where('code', 'pending')->first();
+            
+            if (!$pendingStatus) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Estado "pending" no encontrado en el sistema'
+                ], 500);
+            }
+
+            $report = Report::create([
+                'report_status_id' => $pendingStatus->id,
+                'description' => 'Reporte de calificaciones del estudiante ' . $student->name . ' ' . $student->lastname
+            ]);
+
+            $reportInscriptions = [];
+            foreach ($inscriptions as $inscription) {
+                $reportInscriptions[] = [
+                    'report_id' => $report->id,
+                    'inscription_id' => $inscription->id,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+
+            ReportInscription::insert($reportInscriptions);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el reporte: ' . $e->getMessage()
+            ], 500);
+        }
+        
         $grades = [];
         $totalSubjects = 0;
         $approvedSubjects = 0;
@@ -139,6 +176,7 @@ class StudentController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
+                'report_id' => $report->id,
                 'student' => [
                     'id' => $student->id,
                     'carnet' => $student->carnet,
