@@ -80,6 +80,7 @@ const StudentList: React.FC = () => {
   return (
     <div className="student-list-container">
       <header className="student-list-header">
+        <img src="/Logo_UCA_2015.jpg" alt="UCA Logo" className="uca-logo" />
         <h1>Lista de Estudiantes</h1>
         <p>Total de estudiantes: {students.length}</p>
       </header>
