@@ -110,3 +110,92 @@ de riesgo como el de SQL Inyection.
 # Notas
 
 El propósito de la prueba no es completar la totalidad de las funcionalidades, sino demostrar la capacidad de seleccionar de manera adecuada una estrategia de desarrollo y una estructura de código que permitan avanzar hacia una solución con estándares de calidad propios del ámbito empresarial.
+
+---
+
+# Instrucciones de Ejecución
+
+## Backend (Laravel)
+
+### Prerrequisitos
+- PHP >= 8.0
+- Composer
+- Base de datos (PostgreSQL)
+- Node.js (para assets de Laravel)
+
+### Configuración
+1. Copiar el archivo de entorno:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Configurar la base de datos en el archivo `.env`:
+   ```
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=nombre_base_de_datos
+   DB_USERNAME=usuario
+   DB_PASSWORD=contraseña
+   ```
+
+### Instalación y Ejecución
+1. Instalar dependencias de PHP:
+   ```bash
+   composer install
+   ```
+
+2. Generar clave de la aplicación:
+   ```bash
+   php artisan key:generate
+   ```
+
+3. Ejecutar migraciones:
+   ```bash
+   php artisan migrate
+   ```
+
+4. Ejecutar seeders (datos iniciales):
+   ```bash
+   php artisan db:seed
+   ```
+
+5. Iniciar servidor de desarrollo:
+   ```bash
+   php artisan serve
+   ```
+   
+   El backend se ejecutará por defecto en el puerto `http://localhost:8000`
+
+### Docker (Opcional)
+Si prefiere usar Docker:
+```bash
+docker-compose up -d
+```
+
+## Frontend (React)
+
+### Prerrequisitos
+- Node.js >= 14
+- npm
+
+### Instalación y Ejecución
+1. Navegar al directorio del frontend:
+   ```bash
+   cd FrontEnd
+   ```
+
+2. Instalar dependencias:
+   ```bash
+   npm install
+   ```
+
+3. Iniciar servidor de desarrollo:
+   ```bash
+   npm start
+   ```
+   
+   El frontend se ejecutará por defecto en el puerto `http://localhost:3000`
+
+### Nota
+Asegúrate de que el backend esté corriendo antes de iniciar el frontend, ya que este último consume la API del backend.
