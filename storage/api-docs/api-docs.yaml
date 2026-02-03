@@ -25,6 +25,54 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Student'
+  /api/students/{id}/grade-report:
+    get:
+      tags:
+        - Students
+      summary: Generar reporte de calificaciones de un estudiante
+      description: Retorna el reporte de calificaciones de un estudiante en formato JSON
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del estudiante
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      student:
+                        $ref: '#/components/schemas/Student'
+                      grades:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Grade'
+                      summary:
+                        $ref: '#/components/schemas/GradeSummary'
+        '404':
+          description: Estudiante no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Estudiante no encontrado"
 components:
   schemas:
     Student:
@@ -59,3 +107,68 @@ components:
           type: string
           format: date-time
           example: "2026-02-03T05:41:38.000000Z"
+    Subject:
+      type: object
+      required:
+        - id
+        - code
+        - name
+        - uv
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "MAT101"
+        name:
+          type: string
+          example: "Matemáticas I"
+        uv:
+          type: integer
+          example: 4
+    Grade:
+      type: object
+      required:
+        - subject
+        - qualification
+        - coursed_times
+        - status
+      properties:
+        subject:
+          $ref: '#/components/schemas/Subject'
+        qualification:
+          type: number
+          format: float
+          example: 85.5
+        coursed_times:
+          type: integer
+          example: 1
+        status:
+          type: string
+          example: "Active"
+    GradeSummary:
+      type: object
+      required:
+        - total_subjects
+        - approved_subjects
+        - failed_subjects
+        - average_grade
+        - total_uv
+      properties:
+        total_subjects:
+          type: integer
+          example: 5
+        approved_subjects:
+          type: integer
+          example: 4
+        failed_subjects:
+          type: integer
+          example: 1
+        average_grade:
+          type: number
+          format: float
+          example: 78.5
+        total_uv:
+          type: integer
+          example: 20

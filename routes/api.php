@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Students endpoints
 Route::get('/students', [StudentController::class, 'index']);
+Route::get('/students/{id}/grade-report', [StudentController::class, 'gradeReport']);
